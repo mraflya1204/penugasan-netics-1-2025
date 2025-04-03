@@ -3,8 +3,6 @@ const path = require('path');
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.get('/health', (req, out) => {
     const time = Date.now();
     const uptime = process.uptime();
@@ -20,8 +18,10 @@ app.get('/health', (req, out) => {
 
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.type('text/plain');
+    res.send('Aku NETICS');
 });
+
 
 const PORT = process.env.PORT || 727;
 app.listen(PORT, () => {
