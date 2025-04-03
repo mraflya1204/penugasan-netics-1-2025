@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      target: runner 
+    container_name: Lab1
+    ports:
+      - "727:727"
+    environment:
+      - NODE_ENV=production
+    restart: always
+    volumes:
+      - /app/node_modules
