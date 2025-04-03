@@ -1,0 +1,33 @@
+name: Deploy Node.js App with Docker
+
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Repo checkout
+      uses: actions/checkout@v3
+
+    - name: node setup
+      uses: actions/setup-node@v3
+      with:
+        node-version: '23'
+        cache: 'npm'
+
+    - name: dependencies
+      run: |
+        npm ci --only=production
+
+    - name: Build docker image
+      run: |
+        docker build -t lab1 .
+        docker tag lab1 mraflya1204/lab1:latest
+
+    - name: Push image to hub
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker push mraflya1204/lab1:latest
+
+#    - name: Deploy to VPS (optional)
+#      run: |
+#        ssh -o StrictHostKeyChecking=no user@your_vps_ip "docker pull username/my-app:latest && docker run -d -p 727:727 username/my-app:latest"
