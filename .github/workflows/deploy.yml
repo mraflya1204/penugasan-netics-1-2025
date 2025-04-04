@@ -27,6 +27,7 @@ jobs:
     - name: Build docker image
       run: |
         docker build -t lab1 src/
+        docker tag lab1 mraflya1204/lab1:latest
 
     - name: Push image to hub
       run: |
