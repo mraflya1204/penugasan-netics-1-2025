@@ -1,4 +1,4 @@
-name: Deploy Node.js App with Docker
+name: Deploy
 
 on: 
   push:
