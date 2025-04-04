@@ -6,8 +6,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --only=production
 
-COPY . .
-
 #RUNNER
 FROM node:23-alpine AS runner
 
