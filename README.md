@@ -55,7 +55,7 @@ FROM node:23-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json interface.js ./
+COPY package.json package-lock.json interface.js index.html cipher.png styles.css ./
 RUN npm ci --only=production
 
 #RUNNER
@@ -65,16 +65,21 @@ WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/interface.js ./interface.js
+COPY --from=builder /app/index.html ./index.html
+COPY --from=builder /app/cipher.png ./cipher.png
+COPY --from=builder /app/styles.css ./styles.css
+
 
 EXPOSE 727
 
 CMD ["node", "interface.js"]
+
 ```
 Dalam proyek ini, saya menggunakan node:alpine-23 sebagai builder dan runner karena lightweight dan support untuk proyek `node.js`. 
 
-Pada tahap builder, kita deklarasikan `WORKDIR` kita ke folder `app`. Lalu kita copy `package.json`, `package-lock.json` dan juga `interface.js` ke `WORKDIR`. Ketiga file tersebut penting agar ketika image dijalkan nanti, mereka bisa tau package apa saja yang diperlukan untuk menjalankan API yang telah kita buat dan `interface.js` yaitu API kita sendiri. Kemudian kita akan run `npm ci --only=production` yang akan install dependencies (jika mesin perlu) dan juga akan menggunakan yang perlu pada tahap production saja (package tahap dev akan diskip). 
+Pada tahap builder, kita deklarasikan `WORKDIR` kita ke folder `app`. Lalu kita copy `package.json`, `package-lock.json`, `interface.js`, `index.html`, dan juga asset assetnya ke `WORKDIR`. Semua file tersebut penting agar ketika image dijalkan nanti, mereka bisa tau package apa saja yang diperlukan untuk menjalankan API yang telah kita buat dan `interface.js` yaitu API kita sendiri. Kemudian kita akan run `npm ci --only=production` yang akan install dependencies (jika mesin perlu) dan juga akan menggunakan yang perlu pada tahap production saja (package tahap dev akan diskip). 
 
-Pada tahap runner, kita akan tranfer `node modules` dan juga `interface.js` yang telah terinstall agar bisa dijalankan oleh runner.  Setelah itu kita akan membuka PORT 727 untuk digunakan oleh API. Setelah itu kita akan jalankan comman `node interface.js` yang akan menjalankan API tersebut.
+Pada tahap runner, kita akan tranfer semua file penting yang telah terinstall agar bisa dijalankan oleh runner.  Setelah itu kita akan membuka PORT 727 untuk digunakan oleh API. Setelah itu kita akan jalankan comman `node interface.js` yang akan menjalankan API tersebut.
 
 ## Build Container Image
 Ketika Dockerfile sudah siap, kita dapat menjalankan command `docker build` untuk membuat image dari aplikasi kita. Untuk ini, saya menggunakan command `docker build -t lab1 .` yang akan membuat image docker baru dengan nama `lab1`.
