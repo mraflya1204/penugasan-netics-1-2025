@@ -17,9 +17,11 @@ jobs:
       with:
         node-version: '23'
         cache: 'npm'
+        cache-dependency-path: src/package-lock.json
 
     - name: dependencies
       run: |
+        cd src
         npm ci --only=production
 
     - name: Build docker image
