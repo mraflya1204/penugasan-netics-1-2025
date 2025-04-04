@@ -118,3 +118,141 @@ Setelah pull selesai, kita hanya perlu untuk melakukan `docker run` untuk menjal
 Karena kita menggunakan opsi `-d`, process API akan berjalan pada background. Kita dapat mengakses API yang telah dideploy dengan menggunakan koneksi ke IP dari VPS. Disini IP VPS saya adalah `46.202.164.2`. Lalu kita bisa specify port yang kita gunakan. Karena disini saya menggunakan port 727, untuk mengakses API yang telah dideploy yaitu dengan url `http://46.202.164.2:727/health`.
 
 ![](media/vpshealth.png)
+
+## Otomasi menggunakan Github Actions
+```yaml
+name: Deploy
+
+on: 
+  push:
+    paths-ignore:
+      - 'README.md' #I need this since I'm writing the report and it keep updating my VPS
+      - 'media' #Also this is unimportant for the deployment
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Repo checkout
+      uses: actions/checkout@v3
+
+    - name: node setup
+      uses: actions/setup-node@v3
+      with:
+        node-version: '23'
+        cache: 'npm'
+        cache-dependency-path: src/package-lock.json
+
+    - name: dependencies
+      run: |
+        cd src
+        npm ci --only=production
+
+    - name: Build docker image
+      run: |
+        docker build -t lab1 src/
+        docker tag lab1 mraflya1204/lab1:latest
+
+    - name: Push image to hub
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker push mraflya1204/lab1:latest
+
+    - name: SSH setup
+      uses: webfactory/ssh-agent@v0.9.0
+      with: 
+        ssh-private-key: ${{ secrets.SSH_KEY }}
+
+    - name: Add key to hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
+        
+    - name: Deploy to VPS
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} << 'EOF'
+          docker stop $(docker ps -a -q)
+          docker pull mraflya1204/lab1:latest
+          docker run -d -p 727:727 mraflya1204/lab1
+        EOF
+```
+Agar dapat melakukan otomasi deploy setiap ada update pada repository, kita akan menggunakan github actions. Sebelumnya sudah diset beberapa github secrets yang memuat informasi sensitif seperti `SSH_KEY`, `SSH_IP`, `DOCKER_USERNAME`, `DOCKER_PASSWORD`, dan sebagainya.
+
+```yaml
+on: 
+  push:
+    paths-ignore:
+      - 'README.md' #I need this since I'm writing the report and it keep updating my VPS
+      - 'media' #Also this is unimportant for the deployment
+```
+Bagian ini memerintahkan github actions untuk menjalankan script `yml` ketika ada aksi push terhadap repositori. Ada beberapa exception seperti `README.md` dan juga `media` folder yang ketika dipush tidak akan trigger github actions.
+
+```yaml
+  build:
+    runs-on: ubuntu-latest
+```
+Github actions akan menggunakan ubuntu sebagai pelaksana perintah.
+
+```yaml
+    steps:
+    - name: Repo checkout
+      uses: actions/checkout@v3
+```
+Langkah pertama yang kita lakukan adalah melakukan checkout repository untuk fetch code yang ada.
+
+```yaml
+    - name: node setup
+      uses: actions/setup-node@v3
+      with:
+        node-version: '23'
+        cache: 'npm'
+        cache-dependency-path: src/package-lock.json
+```
+Selanjutnya github actions akan inisialisasi node.js environment. Dilakukan juga caching npm agar dependencies yang sudah terinstall tidak perlu diinstall ulang. 
+
+```yaml
+    - name: dependencies
+      run: |
+        cd src
+        npm ci --only=production    
+```
+Berikutnya, dependencies yang diperlukan akan diinstall melalui `npm ci`, opsi `only=production` memastikan bahwa hanya dependencies yang diperlukan dalam production saja yang diinstall. 
+
+```yaml
+    - name: Build docker image
+      run: |
+        docker build -t lab1 src/
+        docker tag lab1 mraflya1204/lab1:latest
+```
+Kemudian, github actions akan melakukan build docker sesuai dengan `dockerfile` yang telah dispesifikasikan di repository. Setelah dibuild, image akan ditag dengan nama yang sesuai dengan repository docker hub agar bisa dipush.
+
+```yaml
+    - name: Push image to hub
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker push mraflya1204/lab1:latest
+```
+Sekarang, github actions akan melakukan login ke docker hub dengan menggunakan login credentials yang disembunyikan melalui github secrets. Setelah login berhasil, github action akan melakukan push image yang telah dibuat ke repository yang sesuai.
+
+```
+    - name: SSH setup
+      uses: webfactory/ssh-agent@v0.9.0
+      with: 
+        ssh-private-key: ${{ secrets.SSH_KEY }}
+
+    - name: Add key to hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.SSH_IP }} >> ~/.ssh/known_hosts
+        
+```
+Kedua action tersebut digunakan untuk setup akses SSH ke VPS. Kita menggunakan `ssh-agent` untuk melakukan load SSH key dari github secrets ke runner. Kemudian SSH key tersebut akan ditambah ke `known_host` agar runner tidak perlu melakukan konfirmasi koneksi
+
+```
+    - name: Deploy to VPS
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} << 'EOF'
+          docker stop $(docker ps -a -q)
+          docker pull mraflya1204/lab1:latest
+          docker run -d -p 727:727 mraflya1204/lab1
+        EOF
+```
+Setelah setup SSH, kita akan menggunakan credentials SSH tersebut untuk melakukan remote connection ke VPS. Setelah berhasil masuk, akan dilakukan command `docker stop $(docker ps -a -q)` untuk menghentikan semua container yang sedang berjalan. Setelah itu VPS akan melakukan `docker pull mraflya1204/lab1:latest` untuk pull docker image terbaru. Setelah berhasil, akan dirun menggunakan `docker run -d -p 727:727 mraflya1204/lab1`.
