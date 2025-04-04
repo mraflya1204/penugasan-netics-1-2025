@@ -39,6 +39,8 @@ Sebelum mendeklarasikan `output.json` kita terlebih dahulu mendeklarasikan `time
 
 Karena `timestamp` memerlukan timestamp berupa berapa detik yang telah berlalu sejak epoch, yaitu setelah 1 Januari 1970, kita dapat menggunakan inbuilt function `Date.now()` untuk mendapatkan timestamp yang diperlukan. Untuk `uptime` sendiri, kita dapat menggunakan `process.uptime` yang akan melacak seberapa lama process (dalam hal ini, server API) telah berjalan.
 
+![{B90E4FB9-28B0-4DA8-B809-E58A220ACE91}](https://github.com/user-attachments/assets/4c86b936-c436-4edb-bf80-fea60d87b8ff)
+
 Selanjutnya, ketika host diakses tanpa memanggil API `/health`, akan di return sebuah webpage.
 
 ![{6C905E26-4F33-412C-A299-F3CC4CCB7BA2}](https://github.com/user-attachments/assets/ba099b7a-44d0-4b0c-afe5-83f24ac61035)
