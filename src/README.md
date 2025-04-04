@@ -39,7 +39,11 @@ Sebelum mendeklarasikan `output.json` kita terlebih dahulu mendeklarasikan `time
 
 Karena `timestamp` memerlukan timestamp berupa berapa detik yang telah berlalu sejak epoch, yaitu setelah 1 Januari 1970, kita dapat menggunakan inbuilt function `Date.now()` untuk mendapatkan timestamp yang diperlukan. Untuk `uptime` sendiri, kita dapat menggunakan `process.uptime` yang akan melacak seberapa lama process (dalam hal ini, server API) telah berjalan.
 
+![{B90E4FB9-28B0-4DA8-B809-E58A220ACE91}](https://github.com/user-attachments/assets/4c86b936-c436-4edb-bf80-fea60d87b8ff)
+
 Selanjutnya, ketika host diakses tanpa memanggil API `/health`, akan di return sebuah webpage.
+
+![{6C905E26-4F33-412C-A299-F3CC4CCB7BA2}](https://github.com/user-attachments/assets/ba099b7a-44d0-4b0c-afe5-83f24ac61035)
 
 Setelah semua deklarasi tersebut, PORT akan dibuka agar API dapat diakses melalui host. Untuk API ini, saya menggunakan port 727.
 
@@ -51,7 +55,7 @@ FROM node:23-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json interface.js ./
+COPY package.json package-lock.json interface.js index.html cipher.png styles.css ./
 RUN npm ci --only=production
 
 #RUNNER
@@ -61,16 +65,21 @@ WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/interface.js ./interface.js
+COPY --from=builder /app/index.html ./index.html
+COPY --from=builder /app/cipher.png ./cipher.png
+COPY --from=builder /app/styles.css ./styles.css
+
 
 EXPOSE 727
 
 CMD ["node", "interface.js"]
+
 ```
 Dalam proyek ini, saya menggunakan node:alpine-23 sebagai builder dan runner karena lightweight dan support untuk proyek `node.js`. 
 
-Pada tahap builder, kita deklarasikan `WORKDIR` kita ke folder `app`. Lalu kita copy `package.json`, `package-lock.json` dan juga `interface.js` ke `WORKDIR`. Ketiga file tersebut penting agar ketika image dijalkan nanti, mereka bisa tau package apa saja yang diperlukan untuk menjalankan API yang telah kita buat dan `interface.js` yaitu API kita sendiri. Kemudian kita akan run `npm ci --only=production` yang akan install dependencies (jika mesin perlu) dan juga akan menggunakan yang perlu pada tahap production saja (package tahap dev akan diskip). 
+Pada tahap builder, kita deklarasikan `WORKDIR` kita ke folder `app`. Lalu kita copy `package.json`, `package-lock.json`, `interface.js`, `index.html`, dan juga asset assetnya ke `WORKDIR`. Semua file tersebut penting agar ketika image dijalkan nanti, mereka bisa tau package apa saja yang diperlukan untuk menjalankan API yang telah kita buat dan `interface.js` yaitu API kita sendiri. Kemudian kita akan run `npm ci --only=production` yang akan install dependencies (jika mesin perlu) dan juga akan menggunakan yang perlu pada tahap production saja (package tahap dev akan diskip). 
 
-Pada tahap runner, kita akan tranfer `node modules` dan juga `interface.js` yang telah terinstall agar bisa dijalankan oleh runner.  Setelah itu kita akan membuka PORT 727 untuk digunakan oleh API. Setelah itu kita akan jalankan comman `node interface.js` yang akan menjalankan API tersebut.
+Pada tahap runner, kita akan tranfer semua file penting yang telah terinstall agar bisa dijalankan oleh runner.  Setelah itu kita akan membuka PORT 727 untuk digunakan oleh API. Setelah itu kita akan jalankan comman `node interface.js` yang akan menjalankan API tersebut.
 
 ## Build Container Image
 Ketika Dockerfile sudah siap, kita dapat menjalankan command `docker build` untuk membuat image dari aplikasi kita. Untuk ini, saya menggunakan command `docker build -t lab1 .` yang akan membuat image docker baru dengan nama `lab1`.
