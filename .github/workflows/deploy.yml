@@ -44,4 +44,3 @@ jobs:
           docker pull mraflya1204/lab1:latest
           docker run -d -p 727:727 mraflya1204/lab1
         EOF
-do
