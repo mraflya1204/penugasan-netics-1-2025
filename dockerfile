@@ -3,7 +3,7 @@ FROM node:23-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json interface.js ./
 RUN npm ci --only=production
 
 #RUNNER
