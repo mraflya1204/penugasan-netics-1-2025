@@ -6,15 +6,17 @@
 Pada modul ini, pembuatan API dilakukan menggunakan Express.js sebagai framework. Framework dibentuk dalam file `interface.js` dengan detail sebagai berikut:
 ```js
 const express = require('express');
+const path = require('path');
 
 const app = express();
+app.use(express.static(path.join(__dirname)));
 
-app.get('/health', (req, out) => {
+app.get('/health', (req, res) => {
     const time = Date.now();
     const uptime = process.uptime();
-    
-    out.json({
-        nama: "Muhammad Rafly Abdillah",
+
+    res.json({
+        nama: "Muhammad Rafly Abdillah2",
         NRP: "5025231085",
         timestamp: time,
         uptime: uptime,
@@ -22,25 +24,22 @@ app.get('/health', (req, out) => {
     });
 });
 
-
 app.get('/', (req, res) => {
-    res.type('text/plain');
-    res.send('Aku NETICS 123 Terima Kasih Atas Partisipasinya');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
-
 
 const PORT = process.env.PORT || 727;
 app.listen(PORT, () => {
 
 });
 ```
-Pertama kita specify bahwa `express` memerlukan module `express` dari `node.js`. Setelah itu, kita deklarasikan `app` sebagai instance dari `express`. Setelah itu, kita deklarasi untuk GET request `/health` untuk mengeluarkan file `out.json`. File tersebut memiliki beberapa attribute seperti `nama`, `NRP`, `timestamp`, `uptime`, dan juga `status`. 
+Pertama kita specify bahwa `express` memerlukan module `express` dari `node.js`. Demikian pula dengan module `path`. Setelah itu, kita deklarasikan `app` sebagai instance dari `express`. Kita akan mendeklarasikan `app.use(express.static(path.join(__dirname)));` yang akan menyajikan static file yang ada pada folder kita. Hal ini dilakukan agar `index.html` yang akan kita sajikan pada root url dapat mendeteksi asset asset yang diperlukan. Setelah itu, kita deklarasi untuk GET request `/health` untuk mengeluarkan file `out.json`. File tersebut memiliki beberapa attribute seperti `nama`, `NRP`, `timestamp`, `uptime`, dan juga `status`. 
 
 Sebelum mendeklarasikan `output.json` kita terlebih dahulu mendeklarasikan `time` dan juga `uptime` yang akan dipakai oleh `output.json`. 
 
 Karena `timestamp` memerlukan timestamp berupa berapa detik yang telah berlalu sejak epoch, yaitu setelah 1 Januari 1970, kita dapat menggunakan inbuilt function `Date.now()` untuk mendapatkan timestamp yang diperlukan. Untuk `uptime` sendiri, kita dapat menggunakan `process.uptime` yang akan melacak seberapa lama process (dalam hal ini, server API) telah berjalan.
 
-Selanjutnya, ketika host diakses tanpa memanggil API `/health`, kita akan return sebuah plaintext. Disini plaintext yang akan muncul adalah `Aku NETICS 123 Terima Kasih Atas Partisipasinya`.
+Selanjutnya, ketika host diakses tanpa memanggil API `/health`, akan di return sebuah webpage.
 
 Setelah semua deklarasi tersebut, PORT akan dibuka agar API dapat diakses melalui host. Untuk API ini, saya menggunakan port 727.
 
@@ -112,5 +111,3 @@ Setelah pull selesai, kita hanya perlu untuk melakukan `docker run` untuk menjal
 Karena kita menggunakan opsi `-d`, process API akan berjalan pada background. Kita dapat mengakses API yang telah dideploy dengan menggunakan koneksi ke IP dari VPS. Disini IP VPS saya adalah `46.202.164.2`. Lalu kita bisa specify port yang kita gunakan. Karena disini saya menggunakan port 727, untuk mengakses API yang telah dideploy yaitu dengan url `http://46.202.164.2:727/health`.
 
 ![{58B739F8-944F-4514-B2F8-B851769EABEA}](https://github.com/user-attachments/assets/a6f241e2-85c3-462d-b156-ad7b4b5e468d)
-
-test
