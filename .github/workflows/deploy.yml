@@ -40,7 +40,7 @@ jobs:
     - name: Deploy to VPS
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} << 'EOF'
-          docker ps -q | xargs -r docker stop
+          docker stop $(docker ps -a -q)
           docker pull mraflya1204/lab1:latest
           docker run -d -p 727:727 mraflya1204/lab1
         EOF
