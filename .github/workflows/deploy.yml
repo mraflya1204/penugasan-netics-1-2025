@@ -1,6 +1,10 @@
 name: Deploy Node.js App with Docker
 
-on: push
+on: 
+  push:
+    paths-ignore:
+      - 'README.md' #I need this since I'm writing the report and it keep updating my VPS :|
+
 jobs:
   build:
     runs-on: ubuntu-latest
