@@ -41,6 +41,8 @@ Karena `timestamp` memerlukan timestamp berupa berapa detik yang telah berlalu s
 
 Selanjutnya, ketika host diakses tanpa memanggil API `/health`, akan di return sebuah webpage.
 
+![{6C905E26-4F33-412C-A299-F3CC4CCB7BA2}](https://github.com/user-attachments/assets/ba099b7a-44d0-4b0c-afe5-83f24ac61035)
+
 Setelah semua deklarasi tersebut, PORT akan dibuka agar API dapat diakses melalui host. Untuk API ini, saya menggunakan port 727.
 
 ## Setup Dockerfile untuk Container
