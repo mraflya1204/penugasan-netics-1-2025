@@ -18,7 +18,7 @@ app.get('/health', (req, out) => {
 
 app.get('/', (req, res) => {
     res.type('text/plain');
-    res.send('Aku NETICS 123');
+    res.send('Aku NETICS 123 Terima Kasih Atas Partisipasinya');
 });
 
 
