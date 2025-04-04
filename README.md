@@ -63,11 +63,11 @@ FROM node:23-alpine AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/interface.js ./interface.js
-COPY --from=builder /app/index.html ./index.html
-COPY --from=builder /app/cipher.png ./cipher.png
-COPY --from=builder /app/styles.css ./styles.css
+COPY --from=builder /app/node_modules src/node_modules
+COPY --from=builder /app/interface.js src/interface.js
+COPY --from=builder /app/index.html src/index.html
+COPY --from=builder /app/cipher.png src/cipher.png
+COPY --from=builder /app/styles.css src/styles.css
 
 
 EXPOSE 727
@@ -79,7 +79,7 @@ Dalam proyek ini, saya menggunakan node:alpine-23 sebagai builder dan runner kar
 
 Pada tahap builder, kita deklarasikan `WORKDIR` kita ke folder `app`. Lalu kita copy `package.json`, `package-lock.json`, `interface.js`, `index.html`, dan juga asset assetnya ke `WORKDIR`. Semua file tersebut penting agar ketika image dijalkan nanti, mereka bisa tau package apa saja yang diperlukan untuk menjalankan API yang telah kita buat dan `interface.js` yaitu API kita sendiri. Kemudian kita akan run `npm ci --only=production` yang akan install dependencies (jika mesin perlu) dan juga akan menggunakan yang perlu pada tahap production saja (package tahap dev akan diskip). 
 
-Pada tahap runner, kita akan tranfer semua file penting yang telah terinstall agar bisa dijalankan oleh runner.  Setelah itu kita akan membuka PORT 727 untuk digunakan oleh API. Setelah itu kita akan jalankan comman `node interface.js` yang akan menjalankan API tersebut.
+Pada tahap runner, kita akan tranfer semua file penting yang telah terinstall agar bisa dijalankan oleh runner.  Setelah itu kita akan membuka PORT 727 untuk digunakan oleh API. Setelah itu kita akan jalankan command `node interface.js` yang akan menjalankan API tersebut.
 
 ## Build Container Image
 Ketika Dockerfile sudah siap, kita dapat menjalankan command `docker build` untuk membuat image dari aplikasi kita. Untuk ini, saya menggunakan command `docker build -t lab1 .` yang akan membuat image docker baru dengan nama `lab1`.
