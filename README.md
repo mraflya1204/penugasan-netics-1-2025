@@ -233,7 +233,7 @@ Kemudian, github actions akan melakukan build docker sesuai dengan `dockerfile` 
 ```
 Sekarang, github actions akan melakukan login ke docker hub dengan menggunakan login credentials yang disembunyikan melalui github secrets. Setelah login berhasil, github action akan melakukan push image yang telah dibuat ke repository yang sesuai.
 
-```
+```yaml
     - name: SSH setup
       uses: webfactory/ssh-agent@v0.9.0
       with: 
@@ -246,7 +246,7 @@ Sekarang, github actions akan melakukan login ke docker hub dengan menggunakan l
 ```
 Kedua action tersebut digunakan untuk setup akses SSH ke VPS. Kita menggunakan `ssh-agent` untuk melakukan load SSH key dari github secrets ke runner. Kemudian SSH key tersebut akan ditambah ke `known_host` agar runner tidak perlu melakukan konfirmasi koneksi
 
-```
+```yaml
     - name: Deploy to VPS
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_IP }} << 'EOF'
@@ -256,3 +256,7 @@ Kedua action tersebut digunakan untuk setup akses SSH ke VPS. Kita menggunakan `
         EOF
 ```
 Setelah setup SSH, kita akan menggunakan credentials SSH tersebut untuk melakukan remote connection ke VPS. Setelah berhasil masuk, akan dilakukan command `docker stop $(docker ps -a -q)` untuk menghentikan semua container yang sedang berjalan. Setelah itu VPS akan melakukan `docker pull mraflya1204/lab1:latest` untuk pull docker image terbaru. Setelah berhasil, akan dirun menggunakan `docker run -d -p 727:727 mraflya1204/lab1`.
+
+![](media/githubactionsdeploy.png)
+
+**Dengan otomasi tersebut, apabila kita melakukan sebuah update pada aplikasi API kita, github akan langsung otomatis melakukan deploy ke VPS.**
