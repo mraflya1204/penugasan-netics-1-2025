@@ -50,7 +50,7 @@ Setelah semua deklarasi tersebut, PORT akan dibuka agar API dapat diakses melalu
 ## Setup Dockerfile untuk Container
 Untuk membuat Container, kita perlu untuk membuat sebuah `dockerfile` terlebih dahulu. Dockerfile ini akan menginstruksikan bagaimana Docker dapat wrap sebuah aplikasi (dalam hal ini, API kita). Disini saya menggunakan Docker Multi-Stage yang artinya Builder dan juga Runner image dipisah.
 ```dockerfile
-#BUILDER
+# BUILDER
 FROM node:23-alpine AS builder
 
 WORKDIR /app
@@ -58,22 +58,20 @@ WORKDIR /app
 COPY package.json package-lock.json interface.js index.html cipher.png styles.css ./
 RUN npm ci --only=production
 
-#RUNNER
+# RUNNER
 FROM node:23-alpine AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/node_modules src/node_modules
-COPY --from=builder /app/interface.js src/interface.js
-COPY --from=builder /app/index.html src/index.html
-COPY --from=builder /app/cipher.png src/cipher.png
-COPY --from=builder /app/styles.css src/styles.css
-
+COPY --from=builder /app/node_modules node_modules
+COPY --from=builder /app/interface.js interface.js
+COPY --from=builder /app/index.html index.html
+COPY --from=builder /app/cipher.png cipher.png
+COPY --from=builder /app/styles.css styles.css
 
 EXPOSE 727
 
 CMD ["node", "interface.js"]
-
 ```
 Dalam proyek ini, saya menggunakan node:alpine-23 sebagai builder dan runner karena lightweight dan support untuk proyek `node.js`. 
 
