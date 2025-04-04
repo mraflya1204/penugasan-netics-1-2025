@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - 'README.md' #I need this since I'm writing the report and it keep updating my VPS
+      - 'media' #Also this is unimportant for the deployment
 
 jobs:
   build:
