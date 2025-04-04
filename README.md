@@ -33,7 +33,7 @@ app.listen(PORT, () => {
 
 });
 ```
-Pertama `express` dideklrasikan memerlukan module `express` dari `node.js`. Demikian pula dengan module `path`. Setelah itu, deklarasi `app` sebagai instance dari `express`. Kemudian akan dideklarasikan `app.use(express.static(path.join(__dirname)));` yang akan menyajikan static file yang ada pada folder. Hal ini dilakukan agar `index.html` yang akan disajikan pada root url dapat mendeteksi asset asset yang diperlukan. Setelah itu, deklarasikan untuk GET request `/health` untuk mengeluarkan file `out.json`. File tersebut memiliki beberapa attribute seperti `nama`, `NRP`, `timestamp`, `uptime`, dan juga `status`. 
+Pertama `express` akan di initiate untuk memerlukan module `express` dari `node.js`. Demikian pula dengan module `path`. Setelah itu, deklarasikan `app` sebagai instance dari `express`.`app.use(express.static(path.join(__dirname)));` akan menyajikan static file yang ada pada folder. Hal ini dilakukan agar `index.html` yang akan disajikan pada root url dapat mendeteksi asset asset yang diperlukan. Kemudian setup GET request `/health` untuk mengeluarkan file `out.json`. File tersebut memiliki beberapa attribute seperti `nama`, `NRP`, `timestamp`, `uptime`, dan juga `status`. 
 
 Sebelum mendeklarasikan `output.json`, terlebih dahulu deklarasikan `time` dan juga `uptime` yang akan dipakai oleh `output.json`. 
 
@@ -45,7 +45,7 @@ Selanjutnya, ketika host diakses tanpa memanggil API `/health`, akan di return s
 
 ![](media/root.png)
 
-Setelah semua deklarasi tersebut, PORT akan dibuka agar API dapat diakses melalui host. Untuk API ini, saya menggunakan port 727.
+Setelah semua deklarasi tersebut, PORT akan dibuka agar API dapat diakses melalui host. Untuk API ini, digunakan port 727.
 
 ## Setup Dockerfile untuk Container
 Untuk membuat Container, kita perlu untuk membuat sebuah `dockerfile` terlebih dahulu. Dockerfile ini akan menginstruksikan bagaimana Docker dapat wrap sebuah aplikasi (dalam hal ini, API kita). Disini saya menggunakan Docker Multi-Stage yang artinya Builder dan juga Runner image dipisah.
