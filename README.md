@@ -95,3 +95,22 @@ Kita akan rename image `lab1` yang telah dibuat dengan menggunakan command `dock
 Setelah direname, kita akan melakukan push dengan command `docker push` dengan menyertakan tag yang telah kita buat sebelumnya. `docker push mraflya1204/lab1:latest`
 
 ![{1CBE1F55-9075-4381-8088-E2118434C292}](https://github.com/user-attachments/assets/f0ffafdf-7d29-4512-9ed5-1ed4d3e6bc84)
+
+## Deployment pada VPS
+Untuk proyek ini, saya menggunakan VPS dari `Hostinger`. Sebagai setup, kita harus terlebih dahulu menginstall docker karena akan kita pakai image yang telah kita buat sebelumnya. 
+
+![{D39ECC92-26D4-402A-B48B-35D7A0D818C2}](https://github.com/user-attachments/assets/b8a3b0a2-a193-4ae0-bf0a-be31c6d3d385)
+
+Selanjutnya, kita akan melakukan pull dari docker image terbaru yang telah kita push. Karena repository docker hub saya dibuat publik, kita tidak perlu melakukan login pada VPS dan bisa langsung melakukan pull `docker pull mraflya1204/lab1:latest`. 
+
+![{583018B4-4E0D-41C3-BC17-D2E193282161}](https://github.com/user-attachments/assets/0d192ce0-b62b-4038-8239-a5a949810acf)
+
+Setelah pull selesai, kita hanya perlu untuk melakukan `docker run` untuk menjalankan API yang telah di deploy. `docker run -d -p 727:727 mraflya1204/lab1`
+
+![{027FC671-9A88-4867-BF64-95149FB144B1}](https://github.com/user-attachments/assets/d8dd2ab3-0589-4c34-999c-93ce6ff8a3df)
+
+Karena kita menggunakan opsi `-d`, process API akan berjalan pada background. Kita dapat mengakses API yang telah dideploy dengan menggunakan koneksi ke IP dari VPS. Disini IP VPS saya adalah `46.202.164.2`. Lalu kita bisa specify port yang kita gunakan. Karena disini saya menggunakan port 727, untuk mengakses API yang telah dideploy yaitu dengan url `http://46.202.164.2:727/health`.
+
+![{58B739F8-944F-4514-B2F8-B851769EABEA}](https://github.com/user-attachments/assets/a6f241e2-85c3-462d-b156-ad7b4b5e468d)
+
+
