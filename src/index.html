@@ -38,6 +38,7 @@
                 <button onclick="showTraces()">Traces</button>
                 <button onclick="showEidolons()">Eidolons</button>
                 <button onclick="showLightcone()">Lightcone</button>
+                <button onclick="showSlander()">Slander</button>
             </div>
         <div skills class=show>
             
@@ -135,7 +136,17 @@
                     While in "X" state, reduce the DEF of the enemy by ?%. If Skill scores a CRIT hit, additionally reduce the DEF of the enemy in "X" state by ?%.
                 </p>
             </div>
-            
+        </div>
+        <div id = "slander" class = "hidden">
+            <div class = "slander">
+                <h3>Slander</h3>
+                <p>Cipher? She's just a dumb cat who wish she could deal damage by herself and not be carried by an actual competent DPS. She literally want another DPS to deal the damage first then she deals big damage? that just called being a deadweight for the first half of the battle, not to mention the the situation where you don't even reach her full damage capability cause your team dies too soon. 
+                </p>
+                <p>Dont get me started on her not beaing able to work with E1 tribbie, like you want to be a DPS and you can't even use the best support in the game, you want to be taken seriously as a character? keep dreaming. The Nihility tag isn't even that prevalent on her kit, how can you call yourself a nihility character when you apply a debuff only once per battle, at this point aventurine apply more debuff than her and he's not even a nihility character. 
+                </p>
+                <p>Her being a nihility is just as a possible gateway for a second slot in an acheron team alongside Jiaoqiu. imagine being this mid that you rely on being on a team with some of the best DPS in the game just to be usable, get an identity for real this time, and maybe try not be a deadweight of a character.
+                </p>
+            </div>
         </div>
     </div>
     </main>
@@ -150,6 +161,8 @@
             document.getElementById('eidolons').classList.remove('show');
             document.getElementById('lightcone').classList.add('hidden');
             document.getElementById('lightcone').classList.remove('show');
+            document.getElementById('slander').classList.add('hidden');
+            document.getElementById('slander').classList.remove('show');
         }
 
         function showTraces() {
@@ -161,6 +174,8 @@
             document.getElementById('eidolons').classList.remove('show');
             document.getElementById('lightcone').classList.add('hidden');
             document.getElementById('lightcone').classList.remove('show');
+            document.getElementById('slander').classList.add('hidden');
+            document.getElementById('slander').classList.remove('show');
         }
 
         function showEidolons() {
@@ -172,6 +187,8 @@
             document.getElementById('traces').classList.remove('show');
             document.getElementById('lightcone').classList.add('hidden');
             document.getElementById('lightcone').classList.remove('show');
+            document.getElementById('slander').classList.add('hidden');
+            document.getElementById('slander').classList.remove('show');
         }
         function showLightcone() {
             document.getElementById('lightcone').classList.add('show');
@@ -182,7 +199,22 @@
             document.getElementById('eidolons').classList.remove('show');
             document.getElementById('traces').classList.add('hidden');
             document.getElementById('traces').classList.remove('show');
+            document.getElementById('slander').classList.add('hidden');
+            document.getElementById('slander').classList.remove('show');
         }
+        function showSlander() {
+            document.getElementById('slander').classList.add('show');
+            document.getElementById('slander').classList.remove('hidden');
+            document.getElementById('lightcone').classList.add('hidden');
+            document.getElementById('lightcone').classList.remove('show');
+            document.getElementById('skills').classList.add('hidden');
+            document.getElementById('skills').classList.remove('show');
+            document.getElementById('eidolons').classList.add('hidden');
+            document.getElementById('eidolons').classList.remove('show');
+            document.getElementById('traces').classList.add('hidden');
+            document.getElementById('traces').classList.remove('show');
+        }
+
 
     </script>
 </body>
