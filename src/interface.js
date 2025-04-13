@@ -9,7 +9,7 @@ app.get('/health', (req, res) => {
     const uptime = process.uptime();
 
     res.json({
-        nama: "Muhammad Rafly Abdillah2",
+        nama: "Muhammad Rafly Abdillah",
         NRP: "5025231085",
         timestamp: time,
         uptime: uptime,
